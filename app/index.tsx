@@ -7,9 +7,32 @@ import {
   Alert,
   StyleSheet,
   View,
+  PermissionsAndroid
 } from "react-native";
 
 import RNBluetoothClassic from "react-native-bluetooth-classic";
+
+const requestBTPermission = async () => {
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
+      {
+        title: 'Permiso de Bluetooth',
+        message: 'La app requiere bluetooth para comunicarse con el dispositivo',
+        buttonNeutral: 'Ask Me Later',
+        buttonNegative: 'Cancel',
+        buttonPositive: 'OK',
+      },
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      console.log('permiso concedido');
+    } else {
+      console.log('el usuario NEGO el permiso de bluetooth');
+    }
+  } catch (err) {
+    console.warn(err);
+  }
+};
 
 export default function Index() {
   const [devices, setDevices] = useState<any[]>([]);
@@ -20,6 +43,8 @@ export default function Index() {
   }, []);
 
   const loadDevices = async () => {
+
+    requestBTPermission();
     try {
       setLoading(true);
 
@@ -65,6 +90,28 @@ export default function Index() {
     }
   };
 
+  const ledOn=async(device: any) => {
+    try{
+      const connected = await device.connect();
+       await device.write("H");
+        await device.disconnect();
+    } catch (err) {
+      console.error(err);
+      Alert.alert("Error", String(err));
+    }
+  };
+  
+  const ledOff=async(device: any) => {
+    try{
+      const connected = await device.connect();
+       await device.write("L");
+        await device.disconnect();
+    } catch (err) {
+      console.error(err);
+      Alert.alert("Error", String(err));
+    }
+  };
+
   const renderItem = ({ item }: any) => (
     <TouchableOpacity
       style={styles.device}
@@ -77,7 +124,19 @@ export default function Index() {
       <Text style={styles.address}>
         {item.address}
       </Text>
+
+          <TouchableOpacity style={styles.device} onPress={() => ledOn (item)}> 
+      <Text style={styles.address}> led On
+      </Text>
     </TouchableOpacity>
+
+      <TouchableOpacity style={styles.device} onPress={() => ledOff (item)}>
+      <Text style={styles.address}> led Off
+      </Text>
+    </TouchableOpacity>
+    </TouchableOpacity>
+
+
   );
 
   return (
