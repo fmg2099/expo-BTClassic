@@ -55,7 +55,6 @@
         }
       ],
       [
-<<<<<<< HEAD
         "expo-build-properties",
         {
           "android": {
@@ -64,9 +63,6 @@
         }
       ],
       ["with-rn-bluetooth-classic",
-=======
-        "with-rn-bluetooth-classic",
->>>>>>> f8caa4d2cea9b6ffcec040b857b68c63f73b9bb8
         {
           "peripheralUsageDescription": "Allow myDevice to check bluetooth peripheral info",
           "alwaysUsageDescription": "Allow myDevice to always use bluetooth info",
